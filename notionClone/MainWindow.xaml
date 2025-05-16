@@ -1,0 +1,53 @@
+﻿<Window x:Class="notionClone.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:notionClone"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+
+        Title="Notion Clone" Height="600" Width="900">
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <ObjectDataProvider x:Key="PageTypes" MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:PageType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <TreeView ItemsSource="{Binding Pages}" SelectedItemChanged="TreeView_SelectedItemChanged">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TreeViewItem Header="{Binding Title}" MouseDoubleClick="TreeViewItem_MouseDoubleClick"/>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+
+
+            <Button Content="Добавить элемент" Command="{Binding AddPageCommand}" Margin="5"/>
+            <Button Content="Добавить папку" Command="{Binding AddFolderCommand}" Margin="5"/>
+            <Button Content="Delete Page" Command="{Binding DeletePageCommand}" Margin="5"/>
+            <ComboBox ItemsSource="{Binding Source={StaticResource PageTypes}}"
+          SelectedItem="{Binding SelectedPageType}"
+          Margin="5"/>
+
+
+        </StackPanel>
+
+        <Grid Grid.Column="1">
+            <ContentControl Content="{Binding SelectedPageControl}" />
+        </Grid>
+
+    </Grid>
+</Window>
